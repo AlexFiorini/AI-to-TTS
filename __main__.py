@@ -7,10 +7,10 @@ from gtts import gTTS
 from deep_translator import GoogleTranslator
 
 def main():
-    syslang=FindSysLang()
-    applang=LoadLang(syslang)
-    question=AskandGet(applang)
-    response=OpenAiGet(question)
+    syslang = FindSysLang()
+    applang = LoadLang(syslang)
+    question = AskandGet(applang)
+    response = OpenAiGet(question)
     Mkdir()
     ToTextFile(response)
     ToTTSFile(applang, response)
@@ -18,13 +18,13 @@ def main():
 def FindSysLang():
     windll = ctypes.windll.kernel32
     windll.GetUserDefaultUILanguage()
-    syslang=locale.windows_locale[ windll.GetUserDefaultUILanguage() ]
+    syslang = locale.windows_locale[ windll.GetUserDefaultUILanguage() ]
     return syslang
 
 def LoadLang(syslang):
     with open('Settings/langs.json') as f:
         data = json.load(f)
-        applang=data['langs'][syslang]
+        applang = data['langs'][syslang]
         return applang
 
 def AskandGet(applang):
@@ -36,16 +36,15 @@ def AskandGet(applang):
 def OpenAiGet(question):
     with open('Settings/OpenAI.json') as f:
         data = json.load(f)
-        
 
     response = openai.Completion.create(
-        model=data['values']["model"],
-        prompt=question,
-        temperature=data['values']["temperature"],
-        max_tokens=data['values']["max_tokens"],
-        top_p=data['values']["top_p"],
-        frequency_penalty=data['values']["frequency_penalty"],
-        presence_penalty=data['values']["presence_penalty"]
+        model = data['values']["model"],
+        prompt = question,
+        temperature = data['values']["temperature"],
+        max_tokens = data['values']["max_tokens"],
+        top_p = data['values']["top_p"],
+        frequency_penalty = data['values']["frequency_penalty"],
+        presence_penalty = data['values']["presence_penalty"]
     )
     return response
 
@@ -68,7 +67,7 @@ def ToTextFile(response):
     
 def ToTTSFile(applang, response):
     mytext = response["choices"][0]["text"]
-    myobj = gTTS(text=mytext, lang=applang, slow=False)
+    myobj = gTTS(text = mytext, lang = applang, slow = False)
     myobj.save("Results/Result.mp3")
 
 if __name__ == "__main__":
