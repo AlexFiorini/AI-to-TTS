@@ -39,7 +39,7 @@ def OpenAiGet(question):
         
 
     response = openai.Completion.create(
-        model="text-davinci-003",
+        model=data['values']["model"],
         prompt=question,
         temperature=data['values']["temperature"],
         max_tokens=data['values']["max_tokens"],
