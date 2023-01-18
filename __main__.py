@@ -34,11 +34,15 @@ def AskandGet(applang):
     return question
 
 def OpenAiGet(question):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    if(openai.api_key == None):
-        raise TypeError("The environment variable OPENAI_API_KEY is not set")
     with open('Settings/OpenAI.json') as f:
         data = json.load(f)
+
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    if(openai.api_key == None):
+        if(data['values']["OPENAI_API_KEY"] == ""): 
+            raise TypeError("The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
+        else:
+            openai.api_key = data['values']["OPENAI_API_KEY"]
 
     response = openai.Completion.create(
         model = data['values']["model"],
