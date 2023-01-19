@@ -63,7 +63,6 @@ def Mkdir():
     if not Exist:
         os.makedirs(path)
 
-
 def ToTextFile(response):
     f = open("Results/Temp.txt", 'w')
     f.writelines(response["choices"][0]["text"])
