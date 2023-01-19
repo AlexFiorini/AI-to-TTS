@@ -1,6 +1,6 @@
 {
     "values": {
-	"OPENAI_API_KEY": "",
+        "OPENAI_API_KEY": "",
         "model": "text-davinci-003",
         "temperature": 0,
         "max_tokens": 3000,
