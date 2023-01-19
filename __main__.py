@@ -40,6 +40,8 @@ def OpenAiGet(question):
     openai.api_key = os.getenv("OPENAI_API_KEY")
     if(openai.api_key == None):
         if(data['values']["OPENAI_API_KEY"] == ""): 
+            print("The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
+            os.system("pause")
             raise TypeError("The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
         else:
             openai.api_key = data['values']["OPENAI_API_KEY"]
