@@ -23,7 +23,7 @@ def main():
         Playmp3(applang)
         a = Loop(applang)
 
-def AskLang():
+def AskLang(applang):
     GoogleTranslator(source='auto', target=applang).translate("Scegli la lingua da impostare. Se non scegli nessuna lingua, o la lingua inserita non è correta, verrà usata la lingua del sistema. La lingua va scelta tra quelle presenti nel file json")
     lang = input()
     return lang
