@@ -1,3 +1,4 @@
 openai
 gtts
 deep_translator
+playsound

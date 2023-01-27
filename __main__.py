@@ -3,17 +3,35 @@ import json
 import locale
 import ctypes
 import openai
+import playsound
 from gtts import gTTS
 from deep_translator import GoogleTranslator
 
 def main():
-    syslang = FindSysLang()
-    applang = LoadLang(syslang)
-    question = AskandGet(applang)
-    response = OpenAiGet(question)
-    Mkdir()
-    ToTextFile(response)
-    ToTTSFile(applang, response)
+    a=True
+    while (a==True) :
+        syslang = FindSysLang()
+        applang = LoadLang(syslang)
+        question = AskandGet(applang)
+        response = OpenAiGet(question)
+        Mkdir()
+        ToTextFile(response)
+        ToTTSFile(applang, response)
+        print(GoogleTranslator(source='auto', target=applang).translate("Vuoi riprodurre il file audio?"))
+        a=input("Y/n")
+        if (a=="Y"):
+            a=True
+        else:
+            a=False
+
+        playsound.playsound('/Results/Result.mp3', a)
+
+        print(GoogleTranslator(source='auto', target=applang).translate("Vuoi chiedere un'altra domanda?"))
+        a=input("Y/n")
+        if (a=="Y"):
+            a=True
+        else:
+            a=False
 
 def FindSysLang():
     windll = ctypes.windll.kernel32
