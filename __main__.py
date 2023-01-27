@@ -9,12 +9,12 @@ from deep_translator import GoogleTranslator
 
 def main():
     a=True
+    syslang = FindSysLang()
+    applang = LoadLang(syslang)
+    lang = AskLang(applang)
+    if(LoadLang(lang) != None):
+        applang = LoadLang(lang)
     while (a==True) :
-        syslang = FindSysLang()
-        applang = LoadLang(syslang)
-        lang = AskLang(applang)
-        if(LoadLang(lang) != None):
-            applang = LoadLang(lang)
         question = AskandGet(applang)
         response = OpenAiGet(question)
         Mkdir()
