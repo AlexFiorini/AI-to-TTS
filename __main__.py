@@ -12,26 +12,21 @@ def main():
     while (a==True) :
         syslang = FindSysLang()
         applang = LoadLang(syslang)
+        lang = AskLang(applang)
+        if(LoadLang(lang) != None):
+            applang = LoadLang(lang)
         question = AskandGet(applang)
         response = OpenAiGet(question)
         Mkdir()
         ToTextFile(response)
         ToTTSFile(applang, response)
-        print(GoogleTranslator(source='auto', target=applang).translate("Vuoi riprodurre il file audio?"))
-        a=input("Y/n")
-        if (a=="Y"):
-            a=True
-        else:
-            a=False
+        Playmp3(applang)
+        a = Loop(applang)
 
-        playsound.playsound('/Results/Result.mp3', a)
-
-        print(GoogleTranslator(source='auto', target=applang).translate("Vuoi chiedere un'altra domanda?"))
-        a=input("Y/n")
-        if (a=="Y"):
-            a=True
-        else:
-            a=False
+def AskLang():
+    GoogleTranslator(source='auto', target=applang).translate("Scegli la lingua da impostare. Se non scegli nessuna lingua, o la lingua inserita non è correta, verrà usata la lingua del sistema. La lingua va scelta tra quelle presenti nel file json")
+    lang = input()
+    return lang
 
 def FindSysLang():
     windll = ctypes.windll.kernel32
@@ -95,6 +90,24 @@ def ToTTSFile(applang, response):
     mytext = response["choices"][0]["text"]
     myobj = gTTS(text = mytext, lang = applang, slow = False)
     myobj.save("Results/Result.mp3")
+
+def Playmp3(applang):
+    print(GoogleTranslator(source='auto', target=applang).translate("Vuoi riprodurre il file audio?"))
+    a=input("Y/n")
+    if (a=="Y"):
+        a=True
+    else:
+        a=False
+
+    playsound.playsound('/Results/Result.mp3', a)
+
+def Loop(applang):
+    print(GoogleTranslator(source='auto', target=applang).translate("Vuoi chiedere un'altra domanda?"))
+    a=input("Y/n")
+    if (a=="Y"):
+        a=True
+    else:
+        a=False
 
 if __name__ == "__main__":
     main()
