@@ -24,7 +24,7 @@ def main():
         a = Loop(applang)
 
 def AskLang(applang):
-    GoogleTranslator(source='auto', target=applang).translate("Scegli la lingua da impostare. Se non scegli nessuna lingua, o la lingua inserita non è correta, verrà usata la lingua del sistema. La lingua va scelta tra quelle presenti nel file json")
+    print(GoogleTranslator(source='auto', target=applang).translate("Scegli la lingua da impostare. Se non scegli nessuna lingua, o la lingua inserita non è correta, verrà usata la lingua del sistema. La lingua va scelta tra quelle presenti nel file json"))
     lang = input()
     return lang
 
@@ -99,7 +99,7 @@ def Playmp3(applang):
     else:
         a=False
 
-    playsound.playsound('/Results/Result.mp3', a)
+    playsound.playsound('Results/Result.mp3', a)
 
 def Loop(applang):
     print(GoogleTranslator(source='auto', target=applang).translate("Vuoi chiedere un'altra domanda?"))
