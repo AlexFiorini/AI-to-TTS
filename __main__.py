@@ -7,15 +7,16 @@ import playsound
 from gtts import gTTS
 from deep_translator import GoogleTranslator
 
+
 def main():
-    a=True
+    a = True
     syslang = FindSysLang()
     applang = LoadLang(syslang)
     lang = AskLang(applang)
-    if(LoadLang(lang) != None):
+    if LoadLang(lang) is not None:
         applang = LoadLang(lang)
-    while (a==True) :
-        question = AskandGet(applang)
+    while a:
+        question = AskAndGet(applang)
         response = OpenAiGet(question)
         Mkdir()
         ToTextFile(response)
@@ -23,58 +24,72 @@ def main():
         Playmp3(applang)
         a = Loop(applang)
 
+
 def AskLang(applang):
-    print(GoogleTranslator(source='auto', target=applang).translate("Scegli la lingua da impostare. Se non scegli nessuna lingua, o la lingua inserita non è correta, verrà usata la lingua del sistema. La lingua va scelta tra quelle presenti nel file json"))
-    lang = input()
+    print(GoogleTranslator(source='auto', target=applang).translate(
+        "Choose the language. If you don't choose, or the language is not correct,"
+        "the system's one will be used. List of languages can be found in json file"))
+    lang = str(input())
     return lang
+
 
 def FindSysLang():
     windll = ctypes.windll.kernel32
     windll.GetUserDefaultUILanguage()
-    syslang = locale.windows_locale[ windll.GetUserDefaultUILanguage() ]
+    syslang = locale.windows_locale[windll.GetUserDefaultUILanguage()]
     return syslang
+
 
 def LoadLang(syslang):
     with open('Settings/langs.json') as f:
         data = json.load(f)
-        applang = data['langs'][syslang]
-        return applang
+        try:
+            applang = data['langs'][syslang]
+            return applang
+        except KeyError:
+            print("Language not selected correctly")
+            return None
 
-def AskandGet(applang):
+
+def AskAndGet(applang):
     translated = GoogleTranslator(source='auto', target=applang).translate("Ask me anything")
     print(translated)
     question = input()
     return question
+
 
 def OpenAiGet(question):
     with open('Settings/OpenAI.json') as f:
         data = json.load(f)
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    if(openai.api_key == None):
-        if(data['values']["OPENAI_API_KEY"] == ""): 
+    if openai.api_key is None:
+        if data['values']["OPENAI_API_KEY"] == "":
             print("The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
             os.system("pause")
-            raise TypeError("The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
+            raise TypeError(
+                "The environment variable OPENAI_API_KEY is not set neither in the environment nor in the json file.")
         else:
             openai.api_key = data['values']["OPENAI_API_KEY"]
 
     response = openai.Completion.create(
-        model = data['values']["model"],
-        prompt = question,
-        temperature = data['values']["temperature"],
-        max_tokens = data['values']["max_tokens"],
-        top_p = data['values']["top_p"],
-        frequency_penalty = data['values']["frequency_penalty"],
-        presence_penalty = data['values']["presence_penalty"]
+        model=data['values']["model"],
+        prompt=question,
+        temperature=data['values']["temperature"],
+        max_tokens=data['values']["max_tokens"],
+        top_p=data['values']["top_p"],
+        frequency_penalty=data['values']["frequency_penalty"],
+        presence_penalty=data['values']["presence_penalty"]
     )
     return response
 
+
 def Mkdir():
     path = "Results"
-    Exist = os.path.exists(path)
-    if not Exist:
+    exist = os.path.exists(path)
+    if not exist:
         os.makedirs(path)
+
 
 def ToTextFile(response):
     f = open("Results/Temp.txt", 'w')
@@ -85,29 +100,34 @@ def ToTextFile(response):
             if line.strip():
                 o.write(line)
     os.remove("Results/Temp.txt")
-    
+
+
 def ToTTSFile(applang, response):
     mytext = response["choices"][0]["text"]
-    myobj = gTTS(text = mytext, lang = applang, slow = False)
+    myobj = gTTS(text=mytext, lang=applang, slow=False)
     myobj.save("Results/Result.mp3")
+
 
 def Playmp3(applang):
     print(GoogleTranslator(source='auto', target=applang).translate("Vuoi riprodurre il file audio?"))
-    a=input("Y/n")
-    if (a=="Y"):
-        a=True
+    a = input("Y/n")
+    if a == "Y":
+        a = True
     else:
-        a=False
+        a = False
 
     playsound.playsound('Results/Result.mp3', a)
 
+
 def Loop(applang):
     print(GoogleTranslator(source='auto', target=applang).translate("Vuoi chiedere un'altra domanda?"))
-    a=input("Y/n")
-    if (a=="Y"):
-        a=True
+    a = input("Y/n")
+    if a == "Y":
+        a = True
     else:
-        a=False
+        a = False
+    return a
+
 
 if __name__ == "__main__":
     main()
